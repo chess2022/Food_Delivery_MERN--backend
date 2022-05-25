@@ -6,6 +6,10 @@ const app = express()
 const mongoose = require("mongoose")
 const User = require("./models/customer")
 const Payment = require("./models/customer")
+const Restaurant = require("./models/restaurants")
+const MenuItem = require("./models/restaurants");
+const Order = require("./models/orders")
+const Driver = require("./models/delivery")
 
 const cors = require("cors")
 const morgan = require("morgan")
