@@ -4,11 +4,11 @@ const mongoose = require("mongoose");
 const ordersSchema = new mongoose.Schema({
     orderID: { type: Number, multipleOf: 1 },
     customerID: { type: String },
-    items: { 
+    items: [{ 
         itemName: { type: String },
         qty: { type: Number, multipleOf: 1 },
         price: { type: Number, multipleOf: 0.01 }
-    },
+    }],
     totalPrice: { type: Number, multipleOf: 0.01 },
     driverID: { type: String },
     orderDate: { type: Date }

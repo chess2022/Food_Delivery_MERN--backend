@@ -38,5 +38,23 @@ app.get("/", (req, res) => {
   res.send("hello world");
 });
 
+// CRUD ROUTES index delete create update show
+
+app.get("/restaurants", async (req, res) => {
+    try {
+        res.json(await Restaurant.find({}))
+    } catch (error) {
+        res.status(400).json(error)
+    }
+})
+
+app.post("/restaurants", async (req, res) => {
+    try {
+        res.json(await Restaurant.create(req.body))
+    } catch (error) {
+        res.status(400).json(error)
+    }
+})
+
 
 app.listen(PORT, () => console.log("we are running"));

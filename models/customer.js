@@ -15,15 +15,16 @@ const userSchema = new mongoose.Schema({
   city: { type: String, required: true },
   state: { type: String, require: true },
   zip: { type: Number, max: 99999, required: true },
-  payment: 
+  payment: [
     {
-      required: false, 
+      required: false,
       type: { type: String, required: true },
       cardNumber: { type: Number, required: true },
       expiration: { type: Date, required: true },
       cvv: { type: Number, required: true },
       nickname: { type: String, required: false },
     },
+  ],
 });
 
 const User = mongoose.model("User", userSchema);
