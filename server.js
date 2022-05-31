@@ -159,6 +159,8 @@ app.get("/restaurants", async (req, res) => {
       } catch (error) {
         res.status(400).json(error);
       }
+    } else {
+      res.redirect("/");
     }
 })
 
@@ -170,13 +172,15 @@ app.post("/restaurants", async (req, res) => {
     }
 })
 
-app.get("/restaurants/:id", async (req, res) => {
+app.get("/restaurants/:_id", async (req, res) => {
     if (req.session.loggedIn) {
         try {
-            res.json(await Restaurant.find(req.params.id))
+            res.json(await MenuItem.find(req.params._id.menuItem))
         } catch (error) {
             res.status(400).json(error)
         }
+    } else {
+        res.redirect("/")
     }
 })
 
