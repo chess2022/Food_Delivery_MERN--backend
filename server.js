@@ -98,7 +98,7 @@ app.post("/login", (req, res) => {
 // end session (logout) uses express session route to delete that session ID and redirect back home
 app.get("/logout", (req, res) => {
   req.session.destroy((err) => {
-    res.redirect("/");
+    res.redirect("/login");
   });
 });
 
@@ -147,7 +147,7 @@ app.get("/", (req, res) => {
   if (req.session.loggedIn) {
       res.redirect("/restaurants")
   } else {
-    res.render("Main.js")
+    res.redirect("/login")
   }
 });
 
@@ -172,10 +172,10 @@ app.post("/restaurants", async (req, res) => {
     }
 })
 
-app.get("/restaurants/:_id", async (req, res) => {
+app.get("/restaurants/:id", async (req, res) => {
     if (req.session.loggedIn) {
         try {
-            res.json(await MenuItem.find(req.params._id.menuItem))
+            res.json(await MenuItem.find(req.params.id.menuItem))
         } catch (error) {
             res.status(400).json(error)
         }
