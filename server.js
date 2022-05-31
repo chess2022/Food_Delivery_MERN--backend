@@ -35,9 +35,6 @@ app.use(morgan("dev"))
 app.use(express.json())
 
 
-app.get("/", (req, res) => {
-  res.send("hello world");
-});
 
 // CRUD ROUTES index delete create update show
 // Need: login, restaurants, single restaurant with menu items, cart, status(delivery details), ...
@@ -101,8 +98,57 @@ app.post("/login", (req, res) => {
 // end session (logout) uses express session route to delete that session ID and redirect back home
 app.get("/logout", (req, res) => {
   req.session.destroy((err) => {
-    res.redirect("/signup");
+    res.redirect("/");
   });
+});
+
+// USER DASHBOARD
+app.get("/user", async (req, res) => {
+    if (req.session.loggedIn) {
+      try {
+        res.json(await User.find({}))
+      } catch (error) {
+        res.status(400).json(error);
+      }
+    }
+})
+
+
+// USER DELETE ACCOUNT ROUTE
+app.delete("/user/:id", async (req, res) => {
+  if (req.session.loggedIn) {
+    try {
+        // send all users
+        res.json(await User.findByIdAndDelete(req.params.id))
+    } catch (error) {
+        //send error
+        res.status(400).json(error)
+    }
+}
+})
+
+// USER UPDATE ROUTE
+app.put("/user/:id", async (req, res) => {
+  if (req.session.loggedIn) {
+    try {
+        // send all users
+        res.json(
+        await User.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        )
+    } catch (error) {
+        //send error
+        res.status(400).json(error)
+    }
+}
+})
+
+
+app.get("/", (req, res) => {
+  if (req.session.loggedIn) {
+      res.redirect("/restaurants")
+  } else {
+    res.render("Main.js")
+  }
 });
 
 // rest of the routes
@@ -123,6 +169,18 @@ app.post("/restaurants", async (req, res) => {
         res.status(400).json(error)
     }
 })
+
+app.get("/restaurants/:id", async (req, res) => {
+    if (req.session.loggedIn) {
+        try {
+            res.json(await Restaurant.find(req.params.id))
+        } catch (error) {
+            res.status(400).json(error)
+        }
+    }
+})
+
+
 
 
 app.listen(PORT, () => console.log("we are running"));
