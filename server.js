@@ -53,11 +53,11 @@ app.get("/signup", async (req, res) => {
 
 // signup send user data to server and stores in DB - POST
 app.post("/signup", async (req, res) => {
-  // capture password and hash it
-  req.body.password = await bcrypt.hash(
-    req.body.password,
-    await bcrypt.genSalt(10)
-  );
+  // // capture password and hash it
+  // req.body.password = await bcrypt.hash(
+  //   req.body.password,
+  //   await bcrypt.genSalt(10)
+  // );
 
   // create the user in the DB
   try {
@@ -77,23 +77,23 @@ app.get("/login", async (req, res) => {
 });
 
 // login send user data to server - POST
-app.post("/login", (req, res) => {
+// app.post("/login", (req, res) => {
   // look the user up by username in DB
-  const { username, password } = req.body;
-  User.findOne({ username }, async (err, user) => {
+  // const { username, password } = req.body;
+  // User.findOne( username, async (err, user) => {
     // if user doesn't exist send error message
-    if (err || !user) return res.send("User does not exist"); //can also render an ejs page that says cannot find that account & redirects to proper page
+    // if (err || !user) return res.send("User does not exist"); //can also render an ejs page that says cannot find that account & redirects to proper page
     // compare password
-    const passwordMatches = await bcrypt.compare(password, user.password); //first comes from frontend and second from DB
+    // const passwordMatches = await bcrypt.compare(password, user.password); //first comes from frontend and second from DB
     // or if it does not match redirect to login - error message
-    if (!passwordMatches) return res.send("Incorrect password"); //or res.render a page and redirects to login
+    // if (!passwordMatches) return res.send("Incorrect password"); //or res.render a page and redirects to login
     // save login status in session/create session
-    req.session.loggedIn = true;
-    req.session.username = username;
+    // req.session.loggedIn = true;
+    // req.session.username = username;
     // redirect to restaurants to see options
-    res.redirect("/restaurants");
-  });
-});
+//     res.redirect("/restaurants");
+//   });
+// });
 
 // end session (logout) uses express session route to delete that session ID and redirect back home
 app.get("/logout", (req, res) => {
@@ -104,19 +104,16 @@ app.get("/logout", (req, res) => {
 
 // USER DASHBOARD
 app.get("/user", async (req, res) => {
-    if (req.session.loggedIn) {
       try {
         res.json(await User.find({}))
       } catch (error) {
         res.status(400).json(error);
       }
-    }
 })
 
 
 // USER DELETE ACCOUNT ROUTE
 app.delete("/user/:id", async (req, res) => {
-  if (req.session.loggedIn) {
     try {
         // send all users
         res.json(await User.findByIdAndDelete(req.params.id))
@@ -124,12 +121,10 @@ app.delete("/user/:id", async (req, res) => {
         //send error
         res.status(400).json(error)
     }
-}
 })
 
 // USER UPDATE ROUTE
 app.put("/user/:id", async (req, res) => {
-  if (req.session.loggedIn) {
     try {
         // send all users
         res.json(
@@ -139,30 +134,25 @@ app.put("/user/:id", async (req, res) => {
         //send error
         res.status(400).json(error)
     }
-}
 })
 
 
-app.get("/", (req, res) => {
-  if (req.session.loggedIn) {
-      res.redirect("/restaurants")
-  } else {
-    res.redirect("/login")
+app.get("/", async (req, res) => {
+  try {
+    res.json(await User.find({}));
+  } catch (error) {
+    res.status(400).json(error);
   }
 });
 
 // rest of the routes
 app.get("/restaurants", async (req, res) => {
-    if (req.session.loggedIn) {
       try {
         res.json(await Restaurant.find({}));
       } catch (error) {
         res.status(400).json(error);
-      }
-    } else {
-      res.redirect("/");
-    }
-})
+  } 
+}) 
 
 app.post("/restaurants", async (req, res) => {
     try {
@@ -173,18 +163,12 @@ app.post("/restaurants", async (req, res) => {
 })
 
 app.get("/restaurants/:id", async (req, res) => {
-    if (req.session.loggedIn) {
         try {
             res.json(await MenuItem.find(req.params.id.menuItem))
         } catch (error) {
             res.status(400).json(error)
-        }
-    } else {
-        res.redirect("/")
     }
 })
-
-
 
 
 app.listen(PORT, () => console.log("we are running"));
